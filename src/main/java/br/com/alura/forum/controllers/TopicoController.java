@@ -18,9 +18,14 @@ public class TopicoController {
     private TopicoRepository repository;
 
     @GetMapping()
-    public List<TopicoResponse> getAllTopicos(){
-        List<Topico> topicos = repository.findAll();
-        return TopicoResponse.converter(topicos);
+    public List<TopicoResponse> getAllTopicos(String nomeCurso){
+       if (nomeCurso == null){
+           List<Topico> topicos = repository.findAll();
+           return TopicoResponse.converter(topicos);
+       }else{
+           List<Topico> topicos = repository.findByCursoNome(nomeCurso);
+           return TopicoResponse.converter(topicos);
+       }
 }
 
 }
