@@ -26,6 +26,10 @@ public class Topico {
         @OneToMany(mappedBy = "topico")
         private List<Resposta> respostas = new ArrayList<>();
 
+        @Deprecated
+        public Topico() {
+        }
+
         public Topico(
                       String titulo,
                       String mensagem,
