@@ -1,9 +1,12 @@
 package br.com.alura.forum.modelos;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
 public class Usuario {
-
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
         private String nome;
         private String email;
