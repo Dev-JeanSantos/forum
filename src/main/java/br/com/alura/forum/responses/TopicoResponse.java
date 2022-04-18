@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TopicoResponse {
-
+    private Long id;
     private String titulo;
     private String mensagem;
     private LocalDateTime dataCriacao;
@@ -19,10 +19,13 @@ public class TopicoResponse {
     }
 
     public TopicoResponse(Topico entity) {
+        this.id = entity.getId();
         this.titulo = entity.getTitulo();
         this.mensagem = entity.getMensagem();
         this.dataCriacao = entity.getDataCriacao();
     }
+
+    public Long getId() {return id;}
 
     public String getTitulo() {
         return titulo;

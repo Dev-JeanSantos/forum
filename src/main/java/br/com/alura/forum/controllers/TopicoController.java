@@ -1,13 +1,17 @@
 package br.com.alura.forum.controllers;
 
 import br.com.alura.forum.modelos.Topico;
+import br.com.alura.forum.repositories.CursoRepository;
 import br.com.alura.forum.repositories.TopicoRepository;
+import br.com.alura.forum.requestes.TopicoRequest;
 import br.com.alura.forum.responses.TopicoResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -16,6 +20,8 @@ public class TopicoController {
 
     @Autowired
     private TopicoRepository repository;
+    @Autowired
+    private CursoRepository cursoRepository;
 
     @GetMapping()
     public List<TopicoResponse> getAllTopicos(String nomeCurso){
@@ -26,6 +32,16 @@ public class TopicoController {
            List<Topico> topicos = repository.findByCursoNome(nomeCurso);
            return TopicoResponse.converter(topicos);
        }
-}
+    }
+
+    @PostMapping
+    public ResponseEntity<TopicoResponse> insert(@Valid @RequestBody TopicoRequest request) {
+        Topico entidade = request.converter(cursoRepository);
+        repository.save(entidade);
+
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(entidade.getId()).toUri();
+        return ResponseEntity.created(uri).body(new TopicoResponse(entidade));
+    }
 
 }
