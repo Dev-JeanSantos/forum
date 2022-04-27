@@ -5,6 +5,7 @@ import br.com.alura.forum.repositories.CursoRepository;
 import br.com.alura.forum.repositories.TopicoRepository;
 import br.com.alura.forum.requestes.TopicoRequest;
 import br.com.alura.forum.responses.TopicoResponse;
+import br.com.alura.forum.responses.TopicoResponseDetalhes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +43,12 @@ public class TopicoController {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(entidade.getId()).toUri();
         return ResponseEntity.created(uri).body(new TopicoResponse(entidade));
+    }
+
+    @GetMapping(value = "/{id}")
+    public TopicoResponseDetalhes findById(@PathVariable Long id) {
+        Topico topico = repository.getOne(id);
+        return new TopicoResponseDetalhes(topico);
     }
 
 }
