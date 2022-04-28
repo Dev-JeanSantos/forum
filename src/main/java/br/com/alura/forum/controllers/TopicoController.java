@@ -7,8 +7,10 @@ import br.com.alura.forum.requestes.TopicoRequest;
 import br.com.alura.forum.requestes.UpdateTopicoRequest;
 import br.com.alura.forum.responses.TopicoResponse;
 import br.com.alura.forum.responses.TopicoResponseDetalhes;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -29,12 +31,15 @@ public class TopicoController {
     private CursoRepository cursoRepository;
 
     @GetMapping()
-    public List<TopicoResponse> getAllTopicos(String nomeCurso){
+    public Page<TopicoResponse> getAllTopicos(@RequestParam(required = false) String nomeCurso,
+                                              @RequestParam int pag,@RequestParam int qtd){
+        Pageable pageable = PageRequest.of(pag, qtd);
+
        if (nomeCurso == null){
-           List<Topico> topicos = repository.findAll();
+           Page<Topico> topicos = repository.findAll(pageable);
            return TopicoResponse.converter(topicos);
        }else{
-           List<Topico> topicos = repository.findByCursoNome(nomeCurso);
+           Page<Topico> topicos = repository.findByCursoNome(nomeCurso, pageable);
            return TopicoResponse.converter(topicos);
        }
     }
