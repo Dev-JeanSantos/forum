@@ -7,6 +7,7 @@ import br.com.alura.forum.requestes.TopicoRequest;
 import br.com.alura.forum.requestes.UpdateTopicoRequest;
 import br.com.alura.forum.responses.TopicoResponse;
 import br.com.alura.forum.responses.TopicoResponseDetalhes;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +39,7 @@ public class TopicoController {
     }
 
     @PostMapping
+    @Transactional
     public ResponseEntity<TopicoResponse> insert(@Valid @RequestBody TopicoRequest request) {
         Topico entidade = request.converter(cursoRepository);
         repository.save(entidade);
@@ -59,4 +61,12 @@ public class TopicoController {
         Topico entidade = request.converter(id, repository);
         return ResponseEntity.ok(new TopicoResponse(entidade));
     }
+
+    @DeleteMapping(value = "/{id}")
+    @Transactional
+    public ResponseEntity delete(@PathVariable Long id) {
+        repository.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+
 }
