@@ -4,10 +4,12 @@ import br.com.alura.forum.modelos.Topico;
 import br.com.alura.forum.repositories.CursoRepository;
 import br.com.alura.forum.repositories.TopicoRepository;
 import br.com.alura.forum.requestes.TopicoRequest;
+import br.com.alura.forum.requestes.UpdateTopicoRequest;
 import br.com.alura.forum.responses.TopicoResponse;
 import br.com.alura.forum.responses.TopicoResponseDetalhes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -51,4 +53,10 @@ public class TopicoController {
         return new TopicoResponseDetalhes(topico);
     }
 
+    @PutMapping(value = "/{id}")
+    @Transactional
+    public ResponseEntity<TopicoResponse> atualizar(@PathVariable Long id, @Valid @RequestBody UpdateTopicoRequest request) {
+        Topico entidade = request.converter(id, repository);
+        return ResponseEntity.ok(new TopicoResponse(entidade));
+    }
 }
