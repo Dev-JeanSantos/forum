@@ -8,8 +8,9 @@ import br.com.alura.forum.requestes.UpdateTopicoRequest;
 import br.com.alura.forum.responses.TopicoResponse;
 import br.com.alura.forum.responses.TopicoResponseDetalhes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -32,6 +33,7 @@ public class TopicoController {
     private CursoRepository cursoRepository;
 
     @GetMapping()
+    @Cacheable(value = "listaDeTopicos")
     public Page<TopicoResponse> getAllTopicos(@RequestParam(required = false) String nomeCurso,
                                               @PageableDefault(sort = "id", direction = Sort.Direction.ASC, page = 0,
                                               size = 5)Pageable pageable){
@@ -46,6 +48,7 @@ public class TopicoController {
 
     @PostMapping
     @Transactional
+    @CacheEvict(value = "listaDeTopicos", allEntries = true)
     public ResponseEntity<TopicoResponse> insert(@Valid @RequestBody TopicoRequest request) {
         Topico entidade = request.converter(cursoRepository);
         repository.save(entidade);
@@ -67,6 +70,7 @@ public class TopicoController {
 
     @PutMapping(value = "/{id}")
     @Transactional
+    @CacheEvict(value = "listaDeTopicos", allEntries = true)
     public ResponseEntity<TopicoResponse> atualizar(@PathVariable Long id, @Valid @RequestBody UpdateTopicoRequest request) {
 
         Optional<Topico> opt = repository.findById(id);
@@ -80,6 +84,7 @@ public class TopicoController {
 
     @DeleteMapping(value = "/{id}")
     @Transactional
+    @CacheEvict(value = "listaDeTopicos", allEntries = true)
     public ResponseEntity delete(@PathVariable Long id) {
         Optional<Topico> opt = repository.findById(id);
         if(opt.isPresent()){
@@ -87,7 +92,5 @@ public class TopicoController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
-
     }
-
 }
