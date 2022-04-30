@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +20,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -32,9 +33,8 @@ public class TopicoController {
 
     @GetMapping()
     public Page<TopicoResponse> getAllTopicos(@RequestParam(required = false) String nomeCurso,
-                                              @RequestParam int pag,@RequestParam int qtd){
-        Pageable pageable = PageRequest.of(pag, qtd);
-
+                                              @PageableDefault(sort = "id", direction = Sort.Direction.ASC, page = 0,
+                                              size = 5)Pageable pageable){
        if (nomeCurso == null){
            Page<Topico> topicos = repository.findAll(pageable);
            return TopicoResponse.converter(topicos);
