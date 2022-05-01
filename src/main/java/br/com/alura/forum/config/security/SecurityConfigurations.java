@@ -1,5 +1,6 @@
 package br.com.alura.forum.config.security;
 
+import br.com.alura.forum.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,8 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
     private AutenticacaoService autenticacaoService;
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private UsuarioRepository repository;
 
     @Override
     @Bean
@@ -47,7 +50,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
+                .and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenService, repository ), UsernamePasswordAuthenticationFilter.class);
     }
 
     //Configurações de Arquivos estaticos (js, css, imagens e etc...)
