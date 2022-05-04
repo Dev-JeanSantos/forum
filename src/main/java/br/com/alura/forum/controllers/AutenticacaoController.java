@@ -13,6 +13,7 @@ import br.com.alura.forum.responses.TopicoResponseDetalhes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -32,6 +33,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/auth")
+@Profile(value = {"test", "dev"})
 public class AutenticacaoController {
 
     @Autowired
